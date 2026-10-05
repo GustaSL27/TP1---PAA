@@ -30,6 +30,7 @@ int main(){
 
     fclose(arquivo);
 
+    // Verificação da leitura //
     printf("\nLabirinto carregado (%dx%d) - Chaves necessarias: %d\n\n", linhas, colunas, qtdChaves);
     for (int i = 0; i < linhas; i++) {
         for (int j = 0; j < colunas; j++) {
