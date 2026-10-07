@@ -3,6 +3,7 @@
 int main(){
     int qtdChaves;
     int linhas, colunas;
+    char analise;
 
     char caminho_ent[255];
     FILE* arquivo;
@@ -35,9 +36,14 @@ int main(){
     printf("\nEscolha o modo:\n");
     printf("1 - Encontrar um caminho\n");
     printf("2 - Opcao Extra: Encontrar todos os caminhos possiveis\n");
+    
+    
 
     char escolha;
     scanf(" %c", &escolha);
+    
+    printf("Ativar modo analise? (s/n): ");
+    scanf(" %c", &analise);
 
 
 
@@ -90,4 +96,5 @@ int main(){
     }
 
     else printf("Opcao invalida");
+    if (analise == 's' || analise == 'S') imprimirAnalise();
 }

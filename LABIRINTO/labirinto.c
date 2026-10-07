@@ -1,4 +1,12 @@
 #include "labirinto.h"
+#define RESET    "\033[0m"
+#define VERDE    "\033[1;32m"
+#define AMARELO  "\033[1;33m"
+#define VERMELHO "\033[1;31m"
+#define AZUL     "\033[1;34m"
+#define CINZA    "\033[0;90m"
+long chamadas = 0;
+int nivelMax = 0;
 
 //função que verifica se a posição já foi visitada
 int jaVisitou(Posicao caminho[], int qtdvisitado, Posicao p) {
@@ -16,6 +24,8 @@ int resolver(int linhas, int colunas, int qtdChaves, char lab[linhas][colunas], 
 
     caminho[qtdvisitado] = p; // armazena a posição atual no caminho
     qtdvisitado++;
+    chamadas++;
+    if (qtdvisitado > nivelMax) nivelMax = qtdvisitado;
 
     if (lab[p.linha][p.coluna] == 'X' && chaves == qtdChaves) // verifica se chegou na saída com todas as chaves 
         return qtdvisitado;
@@ -40,6 +50,8 @@ int resolverTodas(int linhas, int colunas, int qtdChaves, char lab[linhas][colun
 
     caminho[qtdvisitado] = p;
     qtdvisitado++;
+    chamadas++;
+    if (qtdvisitado > nivelMax) nivelMax = qtdvisitado;
     // verifica se chegou na saida com todas as chaves e imprime o resultado encontrado
     if(lab[p.linha][p.coluna] == 'X' && chaves == qtdChaves){
         imprimirCoordenadas(caminho, qtdvisitado);
@@ -81,17 +93,40 @@ void imprimirLabirintoComCaminho(int linhas, int colunas, char lab[linhas][colun
         }
     }
 
-    for (int k = 0; k < tam; k++) {
+    for (int k = 0; k < tam - 1; k++) {
         char *c = &copia[caminho[k].linha][caminho[k].coluna];
-        if (*c != 'S' && *c != 'X' && *c != 'C')
-            *c = '*';
+        if (*c != 'A' && *c != 'X' && *c != 'C') {
+            int dl = caminho[k + 1].linha  - caminho[k].linha;
+            int dc = caminho[k + 1].coluna - caminho[k].coluna;
+
+            if      (dl == -1) *c = '^';
+            else if (dl ==  1) *c = 'v';
+            else if (dc == -1) *c = '<';
+            else               *c = '>';
+        }
     }
 
     printf("\nLabirinto com o caminho:\n\n");
     for (int i = 0; i < linhas; i++) {
         for (int j = 0; j < colunas; j++){
-            printf("%c ", copia[i][j]);
+            switch (copia[i][j]) {
+                case '1': printf(CINZA    "# " RESET); break;
+                case 'A': printf(AZUL     "A " RESET); break;
+                case 'C': printf(AMARELO  "C " RESET); break;
+                case 'X': printf(VERMELHO "X " RESET); break;
+                case '^': printf(VERDE    "^ " RESET); break;
+                case 'v': printf(VERDE    "v " RESET); break;
+                case '<': printf(VERDE    "< " RESET); break;
+                case '>': printf(VERDE    "> " RESET); break;
+                default:  printf(". ");
+            }
         }
         printf("\n");
     }
+}
+
+void imprimirAnalise(){
+    printf("\n--- Modo analise ---\n");
+    printf("Chamadas recursivas: %ld\n", chamadas);
+    printf("Nivel maximo de recursao: %d\n", nivelMax);
 }
