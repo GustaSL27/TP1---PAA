@@ -44,6 +44,38 @@ int resolver(int linhas, int colunas, int qtdChaves, char lab[linhas][colunas], 
     }
     return 0;
 }
+
+int resolverGlobo(int linhas, int colunas, int qtdChaves, char lab[linhas][colunas], int chaves, Posicao caminho[], int qtdvisitado, Posicao p) {
+
+    if (lab[p.linha][p.coluna] == 'C') chaves++; // coleta a chave
+
+    caminho[qtdvisitado] = p; // armazena a posição atual no caminho
+    qtdvisitado++;
+    chamadas++;
+    if (qtdvisitado > nivelMax) nivelMax = qtdvisitado;
+
+    if (lab[p.linha][p.coluna] == 'X' && chaves == qtdChaves) // verifica se chegou na saída com todas as chaves 
+        return qtdvisitado;
+
+    Posicao vizinhos[4] = {
+        {(p.linha - 1 + linhas) % linhas, p.coluna},                   // Cima
+        {(p.linha + 1) % linhas, p.coluna},                            // Baixo
+        {p.linha, (p.coluna - 1 + colunas) % colunas},                 // Esquerda
+        {p.linha, (p.coluna + 1) % colunas}                            // Direita
+    };
+
+    for (int i = 0; i < 4; i++) {
+        Posicao v = vizinhos[i];
+        
+        // Já não é preciso testar se v está dentro dos limites de 0 a linhas/colunas
+        if (lab[v.linha][v.coluna] != '1' && !jaVisitou(caminho, qtdvisitado, v)) {
+            int r = resolverGlobo(linhas, colunas, qtdChaves, lab, chaves, caminho, qtdvisitado, v);
+            if (r > 0) return r; // se encontrou um caminho, retorna o tamanho do caminho
+        }
+    }
+    return 0;
+}
+
 // resolve todas solucoes possiveis do labirinto
 int resolverTodas(int linhas, int colunas, int qtdChaves, char lab[linhas][colunas], int chaves, Posicao caminho[], int qtdvisitado, Posicao p) {
     if (lab[p.linha][p.coluna] == 'C') chaves++;
@@ -98,6 +130,12 @@ void imprimirLabirintoComCaminho(int linhas, int colunas, char lab[linhas][colun
         if (*c != 'A' && *c != 'X' && *c != 'C') {
             int dl = caminho[k + 1].linha  - caminho[k].linha;
             int dc = caminho[k + 1].coluna - caminho[k].coluna;
+            
+            // normaliza saltos pela borda (modo globo)
+            if (dl ==  linhas - 1)  dl = -1;
+            if (dl == -(linhas - 1)) dl =  1;
+            if (dc ==  colunas - 1) dc = -1;
+            if (dc == -(colunas - 1)) dc =  1;
 
             if      (dl == -1) *c = '^';
             else if (dl ==  1) *c = 'v';
@@ -105,7 +143,7 @@ void imprimirLabirintoComCaminho(int linhas, int colunas, char lab[linhas][colun
             else               *c = '>';
         }
     }
-
+    
     printf("\nLabirinto com o caminho:\n\n");
     for (int i = 0; i < linhas; i++) {
         for (int j = 0; j < colunas; j++){

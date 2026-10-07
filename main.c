@@ -30,24 +30,6 @@ int main(){
     }
     
     fclose(arquivo);
-    
-    
-    // opcoes de escolha
-    printf("\nEscolha o modo:\n");
-    printf("1 - Encontrar um caminho\n");
-    printf("2 - Opcao Extra: Encontrar todos os caminhos possiveis\n");
-    
-    
-
-    char escolha;
-    scanf(" %c", &escolha);
-    
-    printf("Ativar modo analise? (s/n): ");
-    scanf(" %c", &analise);
-
-
-
-
 
     // Verificação da leitura //
     printf("\nLabirinto carregado (%dx%d) - Chaves necessarias: %d\n\n", linhas, colunas, qtdChaves);
@@ -57,6 +39,22 @@ int main(){
         }
         printf("\n");
     }
+    printf("====================\n");
+    
+    
+    // opcoes de escolha
+    printf("\nEscolha o modo:\n");
+    printf("1 - Encontrar um caminho\n");
+    printf("2 - Encontrar um caminho em globo\n");
+    printf("3 - Opcao Extra: Encontrar todos os caminhos possiveis\n");
+    
+    
+
+    char escolha;
+    scanf(" %c", &escolha);
+    
+    printf("Ativar modo analise? (s/n): ");
+    scanf(" %c", &analise);
 
     Posicao atual = {-1, -1};
     for (int i = 0; i < linhas; i++) {
@@ -75,23 +73,31 @@ int main(){
     if (escolha == '1') {
         int tam = resolver(linhas, colunas, qtdChaves, labirinto, 0, caminho, 0, atual);
         if (tam > 0) {
-        imprimirCoordenadas(caminho, tam);
-        imprimirLabirintoComCaminho(linhas, colunas, labirinto, caminho, tam);
-    } else {
-        printf("“Não há um caminho possível para a entrada de dados fornecida“\n");
-    }
+            imprimirCoordenadas(caminho, tam);
+            imprimirLabirintoComCaminho(linhas, colunas, labirinto, caminho, tam);
+        }
+        else {
+            printf("Nao ha um caminho possivel para a entrada de dados fornecida\n");
+        }
     }
 
     else if (escolha == '2') {
+        int tam = resolverGlobo(linhas, colunas, qtdChaves, labirinto, 0, caminho, 0, atual);
+        if (tam > 0) {
+            imprimirCoordenadas(caminho, tam);
+            imprimirLabirintoComCaminho(linhas, colunas, labirinto, caminho, tam);
+        } else {
+            printf("Nao ha um caminho possivel para a entrada de dados fornecida\n");
+        }
+    }
 
-            
-            
+    else if (escolha == '3') {
         int total = resolverTodas(linhas, colunas, qtdChaves, labirinto, 0, caminho, 0, atual);
             
         if (total > 0) {
             printf("\nTotal de caminhos encontrados: %d\n", total);
         } else {
-            printf("“Não há um caminho possível para a entrada de dados fornecida“\n");
+            printf("Nao ha um caminho possivel para a entrada de dados fornecida\n");
         }
     }
 
