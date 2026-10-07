@@ -58,16 +58,15 @@ int resolverGlobo(int linhas, int colunas, int qtdChaves, char lab[linhas][colun
         return qtdvisitado;
 
     Posicao vizinhos[4] = {
-        {(p.linha - 1 + linhas) % linhas, p.coluna},                   // Cima
-        {(p.linha + 1) % linhas, p.coluna},                            // Baixo
-        {p.linha, (p.coluna - 1 + colunas) % colunas},                 // Esquerda
-        {p.linha, (p.coluna + 1) % colunas}                            // Direita
+        {(p.linha - 1 + linhas) % linhas, p.coluna},
+        {(p.linha + 1) % linhas, p.coluna},
+        {p.linha, (p.coluna - 1 + colunas) % colunas},
+        {p.linha, (p.coluna + 1) % colunas}
     };
 
     for (int i = 0; i < 4; i++) {
         Posicao v = vizinhos[i];
         
-        // Já não é preciso testar se v está dentro dos limites de 0 a linhas/colunas
         if (lab[v.linha][v.coluna] != '1' && !jaVisitou(caminho, qtdvisitado, v)) {
             int r = resolverGlobo(linhas, colunas, qtdChaves, lab, chaves, caminho, qtdvisitado, v);
             if (r > 0) return r; // se encontrou um caminho, retorna o tamanho do caminho
